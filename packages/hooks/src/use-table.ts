@@ -39,13 +39,13 @@ export type TableConfig<A extends ApiFn, T, C> = {
    *
    * @param columns
    */
-  getColumnChecks: (columns: C[]) => TableColumnCheck[];
+  getColumnChecks?: (columns: C[]) => TableColumnCheck[];
   /**
    * get columns
    *
    * @param columns
    */
-  getColumns: (columns: C[], checks: TableColumnCheck[]) => C[];
+  getColumns?: (columns: C[], checks: TableColumnCheck[]) => C[];
   /**
    * callback when response fetched
    *
@@ -72,16 +72,16 @@ export default function useHookTable<A extends ApiFn, T, C>(config: TableConfig<
 
   const data: Ref<TableDataWithIndex<T>[]> = ref([]);
 
-  const columnChecks: Ref<TableColumnCheck[]> = ref(getColumnChecks(config.columns()));
+  const columnChecks: Ref<TableColumnCheck[]> = ref(getColumnChecks?.(config.columns()) ?? []);
 
-  const columns = computed(() => getColumns(allColumns.value, columnChecks.value));
+  const columns = computed(() => getColumns?.(allColumns.value, columnChecks.value) ?? allColumns.value);
 
   function reloadColumns() {
     allColumns.value = config.columns();
 
     const checkMap = new Map(columnChecks.value.map(col => [col.key, col.checked]));
 
-    const defaultChecks = getColumnChecks(allColumns.value);
+    const defaultChecks = getColumnChecks?.(allColumns.value) ?? [];
 
     columnChecks.value = defaultChecks.map(col => ({
       ...col,
