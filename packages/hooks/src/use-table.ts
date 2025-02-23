@@ -125,7 +125,7 @@ export default function useHookTable<A extends ApiFn, T, C>(config: TableConfig<
    * @param params
    */
   function updateSearchParams(params: Partial<Parameters<A>[0]>) {
-    Object.assign(searchParams, params);
+    Object.assign(searchParams, jsonClone(params));
   }
 
   /** reset search params */
